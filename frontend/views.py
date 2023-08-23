@@ -69,11 +69,11 @@ def submit_form(request):
                 # Set up the email
                 sender_email = settings.EMAIL_HOST_USER
                 sender_password = settings.EMAIL_HOST_PASSWORD
-                receiver_emails = ["kartik@tailwebs.com"]
-                # receiver_emails = [
-                #     "diwalimelbourne@gmail.com", "spiritevents9@gmail.com",
-                #     "vedika@tailwebs.com", "kartik@tailwebs.com"
-                # ]
+                # receiver_emails = ["kartik@tailwebs.com"]
+                receiver_emails = [
+                    "diwalimelbourne@gmail.com", "spiritevents9@gmail.com",
+                    "vedika@tailwebs.com", "kartik@tailwebs.com"
+                ]
 
                 msg = MIMEMultipart()
                 msg['From'] = sender_email
