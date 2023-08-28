@@ -10,22 +10,21 @@ from django.contrib import messages
 
 
 def index(request):
-    """
-    This function are pointing to the main `http://spiritevnts.com.au` domain.
-    :param request: GET
-    :return: html page rendering
-    """
-    return render(request, "frontend/index.html")
-
-
-def index2(request):
-    """
-    This function are pointing to the main `http://visiting.spiritevnts.com.au` domain.
-    :param request: GET
-    :return: html page rendering
-    """
-    request.session.flush()
-    return render(request, "frontend/index2.html")
+    print(request.META['HTTP_HOST'])
+    if 'visiting.spiritevnts.com.au:8000' == request.META['HTTP_HOST']:
+        """
+        This function are pointing to the main `http://visiting.spiritevnts.com.au` domain.
+        :param request: GET
+        :return: html page rendering
+        """
+        return render(request, "frontend/index2.html")
+    else:
+        """
+        This function are pointing to the main `http://spiritevnts.com.au` domain.
+        :param request: GET
+        :return: html page rendering
+        """
+        return render(request, "frontend/index.html")
 
 
 def submit_form(request):
