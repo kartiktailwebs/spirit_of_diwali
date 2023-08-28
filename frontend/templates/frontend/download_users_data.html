@@ -1,0 +1,10 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block body %}
+<div style="text-align: center;">
+    <a href="{% static 'excel/Spirit-Of-Diwali.xlsx' %}" class="btn but-primary mt-3" download>
+        Download excel file
+    </a>
+</div>
+{% endblock %}

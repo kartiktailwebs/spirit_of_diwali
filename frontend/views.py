@@ -10,8 +10,22 @@ from django.contrib import messages
 
 
 def index(request):
-    request.session.flush()
+    """
+    This function are pointing to the main `http://spiritevnts.com.au` domain.
+    :param request: GET
+    :return: html page rendering
+    """
     return render(request, "frontend/index.html")
+
+
+def index2(request):
+    """
+    This function are pointing to the main `http://visiting.spiritevnts.com.au` domain.
+    :param request: GET
+    :return: html page rendering
+    """
+    request.session.flush()
+    return render(request, "frontend/index2.html")
 
 
 def submit_form(request):
@@ -20,7 +34,7 @@ def submit_form(request):
             post_data = request.POST
 
             # excel_file_path = 'media/Spirit-Of-Diwali.xlsx'
-            excel_file_path = os.path.join(settings.MEDIA_ROOT, 'excel/Spirit-Of-Diwali.xlsx')
+            excel_file_path = os.path.join(settings.BASE_DIR, 'static/excel/Spirit-Of-Diwali.xlsx')
 
             try:
                 workbook = load_workbook(excel_file_path)
@@ -69,11 +83,11 @@ def submit_form(request):
                 # Set up the email
                 sender_email = settings.EMAIL_HOST_USER
                 sender_password = settings.EMAIL_HOST_PASSWORD
-                # receiver_emails = ["kartik@tailwebs.com"]
-                receiver_emails = [
-                    "diwalimelbourne@gmail.com", "spiritevents9@gmail.com",
-                    "vedika@tailwebs.com", "kartik@tailwebs.com"
-                ]
+                receiver_emails = ["kartik@tailwebs.com"]
+                # receiver_emails = [
+                #     "diwalimelbourne@gmail.com", "spiritevents9@gmail.com",
+                #     "vedika@tailwebs.com", "kartik@tailwebs.com"
+                # ]
 
                 msg = MIMEMultipart()
                 msg['From'] = sender_email
@@ -112,3 +126,7 @@ def success(request):
         return redirect('/')
     else:
         return render(request, "frontend/success.html")
+
+
+def download_users_data(request):
+    return render(request, "frontend/download_users_data.html")
