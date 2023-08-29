@@ -10,8 +10,7 @@ from django.contrib import messages
 
 
 def index(request):
-    print(request.META['HTTP_HOST'])
-    if 'visiting.spiritevnts.com.au:8000' == request.META['HTTP_HOST']:
+    if 'visiting.spiritevnts.com.au' == request.META['HTTP_HOST']:
         """
         This function are pointing to the main `http://visiting.spiritevnts.com.au` domain.
         :param request: GET

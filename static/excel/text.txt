@@ -1,0 +1,117 @@
+[Unit]
+Description=gunicorn daemon
+Requires=gunicorn.socket
+After=network.target
+
+[Service]
+User=gaganbabber
+Group=www-data
+WorkingDirectory=/home/gaganbabber/rails/staging/spirit_of_diwali_git/spirit_of_diwali
+ExecStart=/home/gaganbabber/rails/staging/spirit_of_diwali_git/venv/bin/gunicorn \
+          --access-logfile - \
+          --workers 3 \
+          --bind unix:/run/gunicorn.sock \
+          spirit_of_diwali.wsgi:application
+
+[Install]
+WantedBy=multi-user.target
+
+server {
+    listen 80;
+    listen [::]:80;
+    server_name visiting.spiritevnts.com.au www.visiting.spiritevnts.com.au;
+
+    location = /favicon.ico { access_log off; log_not_found off; }
+    location /static/ {
+        root /home/gaganbabber/rails/staging/spirit_of_diwali_git/spirit_of_diwali;
+    }
+
+    location / {
+        include proxy_params;
+        proxy_pass http://unix:/run/gunicorn.sock;
+    }
+}
+
+server {
+    listen 80;
+    server_name visiting.spiritevnts.com.au;
+
+    location = /favicon.ico { access_log off; log_not_found off; }
+    location /static/ {
+        root /home/gaganbabber/rails/staging/spirit_of_diwali_git/spirit_of_diwali;
+    }
+
+    location / {
+        include proxy_params;
+        proxy_pass http://unix:/run/gunicorn.sock;
+    }
+}
+
+
+sudo ln -s /etc/nginx/sites-available/spirit_of_diwali /etc/nginx/sites-enabled
+
+sudo cat /var/log/nginx/error.log
+
+
+<VirtualHost *:80>
+        ServerAdmin admin@spiritevnts.com.au
+        ServerName spiritevnts.com.au
+        ServerAlias spiritevnts.com.au
+
+        DocumentRoot /home/gaganbabber/rails/staging/spirit_of_diwali_git/spirit_of_diwali/
+
+        ErrorLog ${APACHE_LOG_DIR}/spiritevnts.com_error.log
+        CustomLog ${APACHE_LOG_DIR}/spiritevnts.com_access.log combined
+
+        Alias /static /home/gaganbabber/rails/staging/spirit_of_diwali_git/spirit_of_diwali/static
+        <Directory /home/gaganbabber/rails/staging/spirit_of_diwali_git/spirit_of_diwali/static>
+            Require all granted
+        </Directory>
+
+        Alias /media /home/gaganbabber/rails/staging/spirit_of_diwali_git/spirit_of_diwali/media
+        <Directory /home/gaganbabber/rails/staging/spirit_of_diwali_git/spirit_of_diwali/media>
+            Require all granted
+        </Directory>
+
+        <Directory /home/gaganbabber/rails/staging/spirit_of_diwali_git/spirit_of_diwali/spirit_of_diwali>
+            <Files wsgi.py>
+                Require all granted
+            </Files>
+        </Directory>
+
+        WSGIDaemonProcess spirit_of_diwali python-path=/home/gaganbabber/rails/staging/spirit_of_diwali_git/spirit_of_diwali python-home=/home/gaganbabber/rails/staging/spirit_of_diwali_git/venv
+        WSGIProcessGroup spirit_of_diwali
+        WSGIScriptAlias / /home/gaganbabber/rails/staging/spirit_of_diwali_git/spirit_of_diwali/spirit_of_diwali/wsgi.py
+</VirtualHost>
+
+sudo nano /etc/apache2/sites-available/spiritofdiwali.conf
+
+<VirtualHost *:80>
+    ServerName spiritevnts.com.au
+    DocumentRoot /home/gaganbabber/django/spirit_of_diwali
+
+    <Directory /home/gaganbabber/django/spirit_of_diwali/spirit_of_diwali>
+        <Files wsgi.py>
+            Require all granted
+        </Files>
+    </Directory>
+
+    WSGIDaemonProcess spirit_of_diwali python-home=/home/gaganbabber/django/venv/bin/python python-path=/home/gaganbabber/django/spirit_of_diwali/spirit_of_diwali
+    WSGIProcessGroup spirit_of_diwali
+    WSGIScriptAlias / /home/gaganbabber/django/spirit_of_diwali/spirit_of_diwali/wsgi.py
+
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+    CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
+
+sudo a2ensite spiritofdiwali
+sudo a2enmod wsgi
+sudo systemctl restart apache2
+
+<VirtualHost *:80>
+    ServerName 104.155.230.1
+
+    ProxyPreserveHost On
+    ProxyPass / http://127.0.0.1:8000/
+    ProxyPassReverse / http://127.0.0.1:8000/
+</VirtualHost>
